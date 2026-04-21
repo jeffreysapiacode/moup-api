@@ -1,0 +1,27 @@
+services:
+  moup-development:
+    image: mysql:latest
+    container_name: moup-db-development
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: moup
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data-development:/var/lib/mysql
+  moup-production:
+    image: mysql:latest
+    container_name: moup-db-production
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: moup
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data-production:/var/lib/mysql
+
+volumes:
+  mysql-data-development:
+  mysql-data-production:

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: moup-api
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3307/moup
+    username: root
+    password: root
