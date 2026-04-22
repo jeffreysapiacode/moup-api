@@ -1,20 +1,24 @@
 package io.moup.api.controller;
 
 import io.moup.api.view.ContentView;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("stream")
+@AllArgsConstructor
 public class StreamController {
 
-    @GetMapping
-    public ContentView test() {
-        return ContentView.builder()
-                .title("How To Get To Heaven")
-                .description("Here is a description of how to get to Heaven.")
-                .build();
+    private static final String FORMAT="classpath:content/%s.m4a";
+    private ResourceLoader resourceLoader;
+
+    @GetMapping(value = "{filename}", produces = "audio/mp4")
+    public Mono<Resource> stream(@PathVariable String filename) {
+        return Mono.fromSupplier(()-> (Resource) resourceLoader.
+                getResource(String.format(FORMAT,filename)))   ;
     }
 
 }
