@@ -1,13 +1,19 @@
+server:
+  port: 8080
 spring:
   application:
     name: moup-api
   jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
   datasource:
     url: jdbc:mysql://localhost:3306/moup
     username: root
     password: root
+
   servlet:
     multipart:
       max-file-size: 1GB

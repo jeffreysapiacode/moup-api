@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   application:
     name: moup-api
@@ -5,6 +7,6 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:mysql://localhost:3307/moup
+    url: jdbc:mysql://192.168.1.18:3307/moup
     username: root
     password: root
