@@ -14,7 +14,8 @@ public class FilenameUtils {
     public static String formatFilename(String title) {
         String currentDate = DATE_FORMATTER.format(Instant.now());
         String lowered = StringUtils.lowerCase(title);
-        String formatted0 = StringUtils.replaceChars(lowered, ",", "");
+        String regexed = lowered.replaceAll("[^a-zA-Z0-9]", "-");
+        String formatted0 = StringUtils.replaceChars(regexed, ",", "");
         String formatted1 = StringUtils.replaceChars(formatted0, " ", "-");
         return currentDate + "-" + formatted1;
     }
