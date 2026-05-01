@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("download")
-@CrossOrigin(value = {"http://localhost:4200", "http://moup.io", "http://localhost", "http://192.168.1.18:4200", "http://192.168.1.5:4200"})
+@CrossOrigin(value = {"http://localhost:4200", "http://moup.io", "http://localhost", "http://192.168.1.4:4200"})
 public class DownloadController {
 
     @GetMapping("/{fileName}")
