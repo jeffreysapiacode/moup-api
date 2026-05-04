@@ -1,10 +1,9 @@
 package io.moup.api.service;
 
-import io.moup.api.entity.AutoDictate;
-import io.moup.api.mapper.AutoDictateMapper;
-import io.moup.api.model.AutoDictateModel;
+import io.moup.api.entity.Word;
+import io.moup.api.mapper.WordMapper;
+import io.moup.api.model.Root;
 import io.moup.api.model.Segment;
-import io.moup.api.model.Word;
 import io.moup.api.repository.AutoDictateRepository;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
@@ -21,23 +20,24 @@ import java.util.List;
 public class AutoDictateService {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private final AutoDictateMapper mapper;
+    private final WordMapper mapper;
     private final AutoDictateRepository autoDictateRepository;
 
-    public void importTranscript(MultipartFile transcript) {
+    public void importTranscript(String contentUuid, MultipartFile transcript) {
         try {
             String json = IOUtils.toString(transcript.getInputStream(), StandardCharsets.UTF_8);
-            AutoDictateModel autoDictateModel = OBJECT_MAPPER.readValue(json, AutoDictateModel.class);
-            List<AutoDictate> autoDictateList = new ArrayList<>();
-            for (Segment segment: autoDictateModel.getSegments()) {
-                for (Word word: segment.getWords()) {
-                    autoDictateList.add(mapper.wordToAutoDictate(word));
+            Root root = OBJECT_MAPPER.readValue(json, Root.class);
+            List<Word> wordList = new ArrayList<>();
+            for (Segment segment: root.getSegments()) {
+                for (io.moup.api.model.Word word: segment.getWords()) {
+                    Word autoDictateWord = mapper.wordToWord(word);
+                    autoDictateWord.setContentUuid(contentUuid);
+                    wordList.add(autoDictateWord);
                 }
             }
-            autoDictateRepository.saveAll(autoDictateList);
+            autoDictateRepository.saveAll(wordList);
         } catch(Exception e) {
             throw new RuntimeException("Error reading file: " + e.getMessage());
         }
     }
-
 }

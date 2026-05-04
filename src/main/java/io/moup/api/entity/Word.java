@@ -16,13 +16,13 @@ import org.hibernate.annotations.UuidGenerator;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AutoDictate {
+public class Word {
     @Id
     @UuidGenerator
     @GeneratedValue
     private String uuid;
+    private String contentUuid;
     private String word;
     private Double start;
     private Double end;
-
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class AutoDictateModel {
+public class Root {
     private String text;
     private String language;
     private List<Segment> segments;

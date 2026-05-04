@@ -16,12 +16,9 @@ public class AutoDictateController {
     private final AutoDictateService autoDictateService;
 
     @PostMapping("upload")
-    public void upload(@RequestParam("transcript") MultipartFile transcript) {
-        saveTranscript(transcript);
+    public void upload(
+            @RequestParam("contentUuid") String contentUuid,
+            @RequestParam("transcript") MultipartFile transcript) {
+        autoDictateService.importTranscript(contentUuid, transcript);
     }
-
-    private void saveTranscript(MultipartFile transcript) {
-        autoDictateService.importTranscript(transcript);
-    }
-
 }
