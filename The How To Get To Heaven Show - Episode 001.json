@@ -1,0 +1,171 @@
+{
+  "text":" Hello. I'm just testing the tracks. Just testing my website. So this is track one. Okay, track one. Thank you.",
+  "segments":[
+    {
+      "id":0,
+      "seek":0,
+      "start":0.7199999999999995,
+      "end":12.14,
+      "text":" Hello. I'm just testing the tracks. Just testing my website. So this is track one. Okay, track one. Thank you.",
+      "tokens":[
+        50405,
+        2425,
+        13,
+        286,
+        478,
+        445,
+        4997,
+        264,
+        10218,
+        13,
+        1449,
+        4997,
+        452,
+        3144,
+        13,
+        407,
+        341,
+        307,
+        2837,
+        472,
+        13,
+        1033,
+        11,
+        2837,
+        472,
+        13,
+        1044,
+        291,
+        13,
+        50975
+      ],
+      "temperature":0.0,
+      "avg_logprob":-0.25540116525465445,
+      "compression_ratio":1.2222222222222223,
+      "no_speech_prob":8.131420883850105e-13,
+      "words":[
+        {
+          "word":" Hello.",
+          "start":0.7199999999999995,
+          "end":1.36,
+          "probability":0.793307363986969
+        },
+        {
+          "word":" I'm",
+          "start":3.34,
+          "end":3.98,
+          "probability":0.9817500710487366
+        },
+        {
+          "word":" just",
+          "start":3.98,
+          "end":4.2,
+          "probability":0.9975519776344299
+        },
+        {
+          "word":" testing",
+          "start":4.2,
+          "end":4.76,
+          "probability":0.9977813363075256
+        },
+        {
+          "word":" the",
+          "start":4.76,
+          "end":5.26,
+          "probability":0.9446802139282227
+        },
+        {
+          "word":" tracks.",
+          "start":5.26,
+          "end":6.0,
+          "probability":0.9806535840034485
+        },
+        {
+          "word":" Just",
+          "start":7.06,
+          "end":7.7,
+          "probability":0.7945860028266907
+        },
+        {
+          "word":" testing",
+          "start":7.7,
+          "end":8.1,
+          "probability":0.9981182813644409
+        },
+        {
+          "word":" my",
+          "start":8.1,
+          "end":8.26,
+          "probability":0.9980121850967407
+        },
+        {
+          "word":" website.",
+          "start":8.26,
+          "end":8.68,
+          "probability":0.9860446453094482
+        },
+        {
+          "word":" So",
+          "start":8.96,
+          "end":8.98,
+          "probability":0.9631782174110413
+        },
+        {
+          "word":" this",
+          "start":8.98,
+          "end":9.16,
+          "probability":0.9518647789955139
+        },
+        {
+          "word":" is",
+          "start":9.16,
+          "end":9.32,
+          "probability":0.9942238926887512
+        },
+        {
+          "word":" track",
+          "start":9.32,
+          "end":9.66,
+          "probability":0.9360294342041016
+        },
+        {
+          "word":" one.",
+          "start":9.66,
+          "end":10.06,
+          "probability":0.7650067210197449
+        },
+        {
+          "word":" Okay,",
+          "start":10.6,
+          "end":10.88,
+          "probability":0.8425124883651733
+        },
+        {
+          "word":" track",
+          "start":11.1,
+          "end":11.32,
+          "probability":0.9975636005401611
+        },
+        {
+          "word":" one.",
+          "start":11.32,
+          "end":11.64,
+          "probability":0.9988881945610046
+        },
+        {
+          "word":" Thank",
+          "start":11.82,
+          "end":11.94,
+          "probability":0.9996746778488159
+        },
+        {
+          "word":" you.",
+          "start":11.94,
+          "end":12.14,
+          "probability":0.9992462396621704
+        }
+      ]
+    }
+  ],
+  "language":"en"
+}

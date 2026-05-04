@@ -1,6 +1,6 @@
 package io.moup.api.controller;
 
-import io.moup.api.service.UploadService;
+import io.moup.api.service.ContentService;
 import io.moup.api.view.UploadView;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,17 +16,17 @@ import java.time.Instant;
 @AllArgsConstructor
 public class UploadController {
 
-    private final UploadService uploadService;
+    private final ContentService contentService;
 
     @PostMapping
     private UploadView upload(
             @RequestParam("title") String title,
             @RequestParam("description") String description,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("transcript") MultipartFile transcript) {
         return UploadView.builder()
                 .uploadedOn(Instant.now())
-                .content(uploadService.uploadAndSave(title, description, file))
+                .content(contentService.uploadAndSave(title, description, file, transcript))
                 .build();
     }
-
 }
