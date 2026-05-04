@@ -5,9 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AutoDictateView {
+public class WordView {
     private String word;
     private Double startTime;
     private Double endTime;
-
 }

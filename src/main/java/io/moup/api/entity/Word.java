@@ -1,5 +1,6 @@
 package io.moup.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -18,9 +19,11 @@ import org.hibernate.annotations.UuidGenerator;
 @AllArgsConstructor
 public class Word {
     @Id
+    @JsonIgnore
     @UuidGenerator
     @GeneratedValue
     private String uuid;
+    @JsonIgnore
     private String contentUuid;
     private String word;
     private Double start;

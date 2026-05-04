@@ -4,7 +4,7 @@ import io.moup.api.entity.Word;
 import io.moup.api.mapper.WordMapper;
 import io.moup.api.model.Root;
 import io.moup.api.model.Segment;
-import io.moup.api.repository.AutoDictateRepository;
+import io.moup.api.repository.WordRepository;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class AutoDictateService {
 
     private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final WordMapper mapper;
-    private final AutoDictateRepository autoDictateRepository;
+    private final WordRepository wordRepository;
 
     public void importTranscript(String contentUuid, MultipartFile transcript) {
         try {
@@ -35,7 +35,7 @@ public class AutoDictateService {
                     wordList.add(autoDictateWord);
                 }
             }
-            autoDictateRepository.saveAll(wordList);
+            wordRepository.saveAll(wordList);
         } catch(Exception e) {
             throw new RuntimeException("Error reading file: " + e.getMessage());
         }
