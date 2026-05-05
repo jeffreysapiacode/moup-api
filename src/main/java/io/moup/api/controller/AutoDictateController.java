@@ -33,7 +33,7 @@ public class AutoDictateController {
     public Page<Word> getRange(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam() String contentUuid) {
+            @RequestParam String contentUuid) {
         Pageable pageable = PageRequest.of(page, size);
         return wordRepository.findByContentUuidOrderByStartAsc(contentUuid, pageable);
     }
