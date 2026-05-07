@@ -6,6 +6,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface WordMapper {
 
-    Word wordToWord(io.moup.api.model.Word word);
+    Word wordToWord(io.moup.api.model.whisper.Word word);
 
 }

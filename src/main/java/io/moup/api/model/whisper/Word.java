@@ -1,4 +1,4 @@
-package io.moup.api.model;
+package io.moup.api.model.whisper;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
