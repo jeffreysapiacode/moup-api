@@ -29,6 +29,7 @@ import java.util.List;
 public class ContentService {
 
     private final ContentRepository contentRepository;
+    private final AutoDictateService autoDictateService;
     private final ContentMapper mapper;
 
     @Transactional(readOnly = true)
@@ -61,6 +62,7 @@ public class ContentService {
                 .uploadedOn(uploadedOn)
                 .filename(filename)
                 .build());
+        autoDictateService.importTranscript(content.getUuid(), transcript);
         return mapper.contentToContentView(content);
     }
 
