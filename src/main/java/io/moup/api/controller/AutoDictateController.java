@@ -37,6 +37,4 @@ public class AutoDictateController {
             @RequestParam String contentUuid) {
         return wordRepository.findByContentUuidAndStartGreaterThanEqualAndStartLessThanOrderByStartAsc(contentUuid, start, end);
     }
-
-
 }

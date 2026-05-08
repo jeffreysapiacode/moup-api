@@ -87,4 +87,10 @@ public class ContentService {
             throw new RuntimeException(e);
         }
     }
+
+    @Transactional
+    public void delete(String uuid) {
+        contentRepository.deleteById(uuid);
+        autoDictateService.deleteByContentUuid(uuid);
+    }
 }
