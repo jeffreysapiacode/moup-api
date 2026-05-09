@@ -4,6 +4,7 @@ import io.moup.api.entity.Word;
 import io.moup.api.repository.WordRepository;
 import io.moup.api.service.AutoDictateService;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("auto-dictate")
 @AllArgsConstructor
-@CrossOrigin(value = {"http://localhost:4200", "http://moup.io", "http://localhost", "http://192.168.1.18:4200", "http://192.168.1.5:4200"})
+@CrossOrigin(value = {"http://localhost:4200", "http://moup.io", "http://localhost", "http://192.168.1.18:4200", "http://192.168.1.5:4200", "http://192.168.1.16:4200"})
 public class AutoDictateController {
 
     private final AutoDictateService autoDictateService;
@@ -30,14 +31,15 @@ public class AutoDictateController {
         autoDictateService.importTranscript(contentUuid, transcript);
     }
 
+    @Cacheable("words")
     @GetMapping()
     public List<Word> getRange(
-            @RequestParam Double start,
-            @RequestParam Double end,
+            @RequestParam(required = false) Double start,
+            @RequestParam(required = false) Double end,
             @RequestParam(required = false) boolean all,
             @RequestParam String contentUuid) {
         if (all) {
-            return wordRepository.findByContentUuid(contentUuid);
+            return wordRepository.findByContentUuidOrderByStartAsc(contentUuid);
         }
         return wordRepository.findByContentUuidAndStartGreaterThanEqualAndStartLessThanOrderByStartAsc(contentUuid, start, end);
     }
