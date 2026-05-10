@@ -32,11 +32,7 @@ public class ContentService {
     private final AutoDictateService autoDictateService;
     private final ContentMapper mapper;
 
-    @Transactional(readOnly = true)
-    public List<Content> getList() {
-        return contentRepository.findAll(Sort.by("uploadedOn").descending());
-    }
-
+    @Transactional
     public ContentView uploadAndSave(String title, String description, MultipartFile file, MultipartFile transcript) {
         IsoFile audioFile;
         Instant uploadedOn = Instant.now();
@@ -53,7 +49,6 @@ public class ContentService {
         double lengthInSeconds = (double)
                 audioFile.getMovieBox().getMovieHeaderBox().getDuration() /
                 audioFile.getMovieBox().getMovieHeaderBox().getTimescale();
-        // Write ID3 tags
         writeID3Tags(title, description, mp4File);
         Content content = contentRepository.save(Content.builder()
                 .title(title)
@@ -64,6 +59,17 @@ public class ContentService {
                 .build());
         autoDictateService.importTranscript(content.getUuid(), transcript);
         return mapper.contentToContentView(content);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Content> getList() {
+        return contentRepository.findAll(Sort.by("uploadedOn").descending());
+    }
+
+    @Transactional
+    public void delete(String uuid) {
+        contentRepository.deleteById(uuid);
+        autoDictateService.deleteByContentUuid(uuid);
     }
 
     private void writeID3Tags(String title, String description, File mp4File) {
@@ -86,11 +92,5 @@ public class ContentService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Transactional
-    public void delete(String uuid) {
-        contentRepository.deleteById(uuid);
-        autoDictateService.deleteByContentUuid(uuid);
     }
 }
