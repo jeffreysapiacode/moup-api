@@ -10,3 +10,6 @@ spring:
     url: jdbc:mysql://172.17.0.1:3307/moup
     username: root
     password: root
+
+cors:
+  allowed-origins: http://moup.io

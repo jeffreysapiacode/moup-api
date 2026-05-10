@@ -13,7 +13,6 @@ spring:
     url: jdbc:mysql://localhost:3306/moup
     username: root
     password: root
-
   servlet:
     multipart:
       max-file-size: 1GB
@@ -22,3 +21,6 @@ spring:
     error:
       include-message: always
       include-binding-errors: always
+
+cors:
+  allowed-origins: http://192.168.1.16:4200
