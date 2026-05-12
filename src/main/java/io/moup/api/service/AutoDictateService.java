@@ -26,6 +26,9 @@ public class AutoDictateService {
 
     @Transactional
     public void importTranscript(String contentUuid, MultipartFile transcript) {
+        if (transcript.isEmpty()) {
+            return;
+        }
         Root root;
         try {
             if (!contentRepository.existsById(contentUuid)) {

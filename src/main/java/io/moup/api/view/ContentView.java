@@ -18,4 +18,5 @@ public class ContentView {
     private Instant uploadedOn;
     private Double duration;
     private String filename;
+    private String mmx;
 }

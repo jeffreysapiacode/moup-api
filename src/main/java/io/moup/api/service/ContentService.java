@@ -20,8 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.Year;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -31,6 +33,9 @@ public class ContentService {
     private final ContentRepository contentRepository;
     private final AutoDictateService autoDictateService;
     private final ContentMapper mapper;
+
+    private static final SecureRandom random = new SecureRandom();
+    private static final Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
 
     @Transactional
     public ContentView uploadAndSave(String title, String description, MultipartFile file, MultipartFile transcript) {
@@ -56,6 +61,7 @@ public class ContentService {
                 .duration(lengthInSeconds)
                 .uploadedOn(uploadedOn)
                 .filename(filename)
+                .mmx(generateMmx())
                 .build());
         autoDictateService.importTranscript(content.getUuid(), transcript);
         return mapper.contentToContentView(content);
@@ -92,5 +98,11 @@ public class ContentService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String generateMmx() {
+        byte[] bytes = new byte[8];
+        random.nextBytes(bytes);
+        return encoder.encodeToString(bytes);
     }
 }
