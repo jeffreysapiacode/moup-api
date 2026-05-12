@@ -1,5 +1,9 @@
 server:
   port: 8081
+  ssl:
+    enabled: true
+    certificate: "classpath:keys/fullchain1.pem"
+    certificate-private-key: "classpath:keys/privkey1.pem"
 spring:
   application:
     name: moup-api
@@ -12,4 +16,4 @@ spring:
     password: root
 
 cors:
-  allowed-origins: http://moup.io
+  allowed-origins: https://moup.io

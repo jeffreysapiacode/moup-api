@@ -101,6 +101,33 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>copy-files-before-build</id>
+						<!-- Bind to a phase before 'compile' -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/classes/keys</outputDirectory>
+							<resources>
+								<resource>
+									<directory>/etc/letsencrypt/archive/api.moup.io/</directory>
+									<includes>
+										<include>**/fullchain1.pem</include>
+										<include>**/privkey1.pem</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
