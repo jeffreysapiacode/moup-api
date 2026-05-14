@@ -1,8 +1,8 @@
 FROM eclipse-temurin:17
 COPY target/moup-api.jar moup-api.jar
-ENTRYPOINT ["java","-Dspring.profiles.active=production","-jar","/moup-api.jar"]
+ENTRYPOINT ["java","-Dspring.profiles.active=production","-Xms2G","-Xmx4G","-jar","/moup-api.jar"]
 
-
+# Build and Deploy to Local Production Server
 #mvn clean install
 #docker build -t moup-api .
 #docker kill moup-api
@@ -11,3 +11,18 @@ ENTRYPOINT ["java","-Dspring.profiles.active=production","-jar","/moup-api.jar"]
 
 #mvn clean install && docker build -t moup-api . && docker kill moup-api && docker rm moup-api && docker run -d -v moup_api_volume:/content --name moup-api -p 8081:8081 --restart always moup-api
 
+
+# 5/14/2026 12:57AM
+# Build and Deploy to AWS EC2 Instance
+# mvn clean install
+# docker build --platform linux/amd64,linux/arm64 -t moup-api .
+# docker tag moup-api:latest 284197461331.dkr.ecr.us-east-2.amazonaws.com/moup-api:latest
+# docker push 284197461331.dkr.ecr.us-east-2.amazonaws.com/moup-api:latest
+
+# ON REMOTE INSTANCE
+# ssh -i "~/Downloads/moup-macbook-air.pem" ec2-user@3.147.184.206 sudo docker pull --platform linux/amd64 284197461331.dkr.ecr.us-east-2.amazonaws.com/moup-api:latest
+# ssh -i "~/Downloads/moup-macbook-air.pem" ec2-user@3.147.184.206 sudo docker kill moup-api
+# ssh -i "~/Downloads/moup-macbook-air.pem" ec2-user@3.147.184.206 sudo docker rm moup-api
+# ssh -i "~/Downloads/moup-macbook-air.pem" ec2-user@3.147.184.206 sudo docker run -d -v moup_api_volume:/content --name moup-api -p 8081:8081 --restart always 284197461331.dkr.ecr.us-east-2.amazonaws.com/moup-api
+
+# mvn clean install && docker build --platform linux/amd64,linux/arm64 -t moup-api . && docker tag moup-api:latest 284197461331.dkr.ecr.us-east-2.amazonaws.com/moup-api:latest && docker push 284197461331.dkr.ecr.us-east-2.amazonaws.com/moup-api:latest && ssh -i "~/Downloads/moup-macbook-air.pem" ec2-user@3.147.184.206 sudo docker pull --platform linux/amd64 284197461331.dkr.ecr.us-east-2.amazonaws.com/moup-api:latest && ssh -i "~/Downloads/moup-macbook-air.pem" ec2-user@3.147.184.206 sudo docker kill moup-api && ssh -i "~/Downloads/moup-macbook-air.pem" ec2-user@3.147.184.206 sudo docker rm moup-api && ssh -i "~/Downloads/moup-macbook-air.pem" ec2-user@3.147.184.206 sudo docker run -d -v moup_api_volume:/content --name moup-api -p 8081:8081 --restart always 284197461331.dkr.ecr.us-east-2.amazonaws.com/moup-api

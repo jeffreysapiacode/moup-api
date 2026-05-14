@@ -35,9 +35,7 @@ public class ContentController {
 
     @Cacheable("content")
     @GetMapping
-    public List<ContentView> getContentList() throws InterruptedException {
-//        Thread.sleep(14000);
-//        throw new RuntimeException("Testing error");
+    public List<ContentView> getContentList() {
         return contentService.getList()
                 .stream()
                 .map(contentMapper::contentToContentView)

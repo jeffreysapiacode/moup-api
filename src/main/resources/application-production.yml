@@ -11,9 +11,9 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:mysql://172.17.0.1:3307/moup
-    username: root
-    password: root
+    url: jdbc:mysql://moup.chaau6g6cyaz.us-east-2.rds.amazonaws.com:3306/moup
+    username: admin
+    password: Moup123!
 
 cors:
   allowed-origins: https://moup.io
