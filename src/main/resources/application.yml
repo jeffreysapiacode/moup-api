@@ -23,6 +23,9 @@ spring:
       include-binding-errors: always
 
 app:
+  allowed-file-types:
+    audio: m4a
+    video: mp4
   environment:
     production: false
   http:

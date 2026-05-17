@@ -2,18 +2,20 @@ package io.moup.api.service;
 
 import io.moup.api.entity.Content;
 import io.moup.api.entity.Word;
+import io.moup.api.enums.ContentType;
 import io.moup.api.mapper.ContentMapper;
 import io.moup.api.repository.ContentRepository;
 import io.moup.api.util.FilenameUtils;
 import io.moup.api.view.ContentView;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.datatype.Artwork;
+import org.mp4parser.IsoFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.core.io.FileSystemResource;
@@ -47,6 +49,14 @@ public class ContentService {
     @Value("${app.http.push-host}")
     private String pushHost;
 
+    @Value("${app.allowed-file-types.audio}")
+    private String[] allowedFileTypesAudio;
+
+    @Value("${app.allowed-file-types.video}")
+    private String[] allowedFileTypesVideo;
+
+    private static final String BASE_DIRECTORY = "./content/";
+
     private final ContentRepository contentRepository;
     private final WordService wordService;
     private final ContentMapper mapper;
@@ -64,24 +74,41 @@ public class ContentService {
 
     @CacheEvict(value = "content", allEntries = true)
     @Transactional
-    public ContentView uploadAndSave(String title, String description, MultipartFile file, MultipartFile transcript) throws Exception {
+    public ContentView uploadAndSave(String title, String description, MultipartFile file, MultipartFile thumbnail, MultipartFile transcript) throws Exception {
         Instant uploadedOn = Instant.now();
         String ext = org.apache.commons.io.FilenameUtils.getExtension(file.getOriginalFilename());
-        String filename =  FilenameUtils.formatFilename(title) + "." + ext;
-        String filePath = "./content/" + filename;
-        File mp4File = new File(filePath);
-        FileUtils.copyInputStreamToFile(file.getInputStream(), mp4File);
-        AudioFile audioFile = AudioFileIO.read(mp4File);
-        AudioHeader header = audioFile.getAudioHeader();
-        Double durationInSeconds = (double) header.getTrackLength();
-        writeID3Tags(title, description, mp4File);
+        ContentType type = getContentType(ext);
+        String baseFilename = FilenameUtils.formatFilename(title);
+        String fullFileName = baseFilename + "." + ext;
+        String filePath = BASE_DIRECTORY + fullFileName;
+        File mediaFile = new File(filePath);
+        FileUtils.copyInputStreamToFile(file.getInputStream(), mediaFile);
+        double durationInSeconds;
+        try (IsoFile audioFile = new IsoFile(filePath)) {
+            durationInSeconds = (double)
+                    audioFile.getMovieBox().getMovieHeaderBox().getDuration() /
+                    audioFile.getMovieBox().getMovieHeaderBox().getTimescale();
+        }
+        if (type.equals(ContentType.AUDIO)) {
+            writeID3Tags(title, description, mediaFile);
+        }
+        // Save Thumbnail
+        if (type.equals(ContentType.VIDEO)) {
+            if (thumbnail.isEmpty()) {
+                throw new RuntimeException("A thumbnail is required for a video. Recommended size is 1920x1080 in the PNG format.");
+            }
+            String thumbnailExt = org.apache.commons.io.FilenameUtils.getExtension(thumbnail.getOriginalFilename());
+            String filename = BASE_DIRECTORY + baseFilename + "." + thumbnailExt;
+            FileUtils.copyInputStreamToFile(thumbnail.getInputStream(), new File(filename));
+        }
         Content content = contentRepository.save(Content.builder()
                 .title(title)
                 .description(description)
                 .duration(durationInSeconds)
                 .uploadedOn(uploadedOn)
-                .filename(filename)
+                .filename(baseFilename)
                 .mmx(generateMmx())
+                .type(type)
                 .build());
         wordService.importTranscript(content.getUuid(), transcript);
         return mapper.contentToContentView(content);
@@ -159,5 +186,15 @@ public class ContentService {
         byte[] bytes = new byte[8];
         random.nextBytes(bytes);
         return encoder.encodeToString(bytes);
+    }
+
+    private ContentType getContentType(String extension) {
+        if (StringUtils.containsAny(extension, allowedFileTypesAudio)) {
+            return ContentType.AUDIO;
+        }
+        if (StringUtils.containsAny(extension, allowedFileTypesVideo)) {
+            return ContentType.VIDEO;
+        }
+        throw new RuntimeException("Cannot import file with extension " + extension);
     }
 }

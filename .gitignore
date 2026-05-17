@@ -33,3 +33,6 @@ build/
 .vscode/
 
 *.m4a
+*.mp4
+*.jpg
+*.png

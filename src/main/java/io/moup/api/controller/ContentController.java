@@ -31,8 +31,9 @@ public class ContentController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("file") MultipartFile file,
+            @RequestParam("thumbnail") MultipartFile thumbnail,
             @RequestParam(value = "transcript", required = false) MultipartFile transcript) throws Exception {
-        return contentService.uploadAndSave(title, description, file, transcript);
+        return contentService.uploadAndSave(title, description, file, thumbnail, transcript);
     }
 
     @PostMapping("upload/album-art")

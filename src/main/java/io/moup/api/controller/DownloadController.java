@@ -22,11 +22,9 @@ public class DownloadController {
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) throws MalformedURLException {
         Path path = Paths.get("content/").resolve(fileName);
         Resource resource = new UrlResource(path.toUri());
-
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
-
 }
