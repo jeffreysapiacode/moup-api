@@ -50,7 +50,7 @@ public class WordController {
                 .toList();
     }
 
-    @CacheEvict("word")
+    @CacheEvict(value = "word",  allEntries = true)
     @DeleteMapping("/cache")
     public void clearCache() {
     }

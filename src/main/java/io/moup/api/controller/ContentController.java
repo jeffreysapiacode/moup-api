@@ -54,7 +54,7 @@ public class ContentController {
                 .toList();
     }
 
-    @CacheEvict("content")
+    @CacheEvict(value = "content", allEntries = true)
     @DeleteMapping("/cache")
     public void clearCache() {
     }
