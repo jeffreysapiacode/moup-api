@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WordView {
     private String word;
-    private Double startTime;
-    private Double endTime;
+    private Double start;
+    private Double end;
 }

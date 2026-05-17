@@ -8,7 +8,8 @@ import java.util.List;
 
 @Repository
 public interface WordRepository extends JpaRepository<Word, String> {
-    List<Word> findByContentUuidAndStartGreaterThanEqualAndStartLessThanOrderByStartAsc(String contentUuid, Double start, Double end);
-    List<Word> findByContentUuidOrderByStartAsc(String contentUuid);
-    void deleteByContentUuid(String contentUuid);
+    List<Word> findAllByContentUuidAndStartGreaterThanEqualAndStartLessThanOrderByStartAsc(String contentUuid, Double start, Double end);
+    List<Word> findAllByContentUuidOrderByStartAsc(String contentUuid);
+    List<Word> findAllByContentUuid(String contentUuid);
+    void deleteAllByContentUuid(String contentUuid);
 }

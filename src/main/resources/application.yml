@@ -22,5 +22,11 @@ spring:
       include-message: always
       include-binding-errors: always
 
-cors:
-  allowed-origins: http://192.168.1.11:4200
+app:
+  environment:
+    production: false
+  http:
+    push-host: https://api.moup.io:8081
+  cors:
+    allowed-origins: http://192.168.1.11:4200
+
