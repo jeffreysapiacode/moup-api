@@ -167,8 +167,8 @@ public class ContentService {
     }
 
     @Transactional
-    public void incrementDownloadCount(String filename) {
-        Content content = findByFilename(filename);
+    public void incrementDownloadCount(String uuid) {
+        Content content = get(uuid);
         content.setDownloadCount(content.getDownloadCount() + 1);
     }
 
