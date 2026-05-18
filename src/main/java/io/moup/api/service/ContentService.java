@@ -111,6 +111,7 @@ public class ContentService {
                 .filename(fullFileName)
                 .mmx(generateMmx())
                 .type(type)
+                .active(Boolean.TRUE)
                 .build());
         wordService.importTranscript(content.getUuid(), transcript);
         return mapper.contentToContentView(content);

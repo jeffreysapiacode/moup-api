@@ -21,4 +21,5 @@ public class ContentView {
     private String filename;
     private String mmx;
     private ContentType type;
+    private Boolean active;
 }

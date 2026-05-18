@@ -34,5 +34,5 @@ public class Content {
     private String mmx;
     @Enumerated(EnumType.STRING)
     private ContentType type;
-
+    private Boolean active;
 }
