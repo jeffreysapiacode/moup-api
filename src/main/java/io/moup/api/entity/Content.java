@@ -35,4 +35,6 @@ public class Content {
     @Enumerated(EnumType.STRING)
     private ContentType type;
     private Boolean active;
+    private Long downloadCount;
+    private Long playCount;
 }

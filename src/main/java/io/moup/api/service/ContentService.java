@@ -112,6 +112,8 @@ public class ContentService {
                 .mmx(generateMmx())
                 .type(type)
                 .active(Boolean.TRUE)
+                .downloadCount(0L)
+                .playCount(0L)
                 .build());
         wordService.importTranscript(content.getUuid(), transcript);
         return mapper.contentToContentView(content);
@@ -158,6 +160,18 @@ public class ContentService {
         FileUtils.copyInputStreamToFile(file.getInputStream(), mp4File);
     }
 
+    @Transactional
+    public void incrementPlayCount(String uuid) {
+        Content content = get(uuid);
+        content.setPlayCount(content.getPlayCount() + 1);
+    }
+
+    @Transactional
+    public void incrementDownloadCount(String filename) {
+        Content content = findByFilename(filename);
+        content.setDownloadCount(content.getDownloadCount() + 1);
+    }
+
     @Transactional(readOnly = true)
     public Content get(String uuid) {
         return contentRepository.findById(uuid)
@@ -173,6 +187,11 @@ public class ContentService {
     public void delete(String uuid) {
         contentRepository.deleteById(uuid);
         wordService.deleteByContentUuid(uuid);
+    }
+
+    private Content findByFilename(String filename) {
+        return contentRepository.findByFilename(filename)
+                .orElseThrow(() -> new RuntimeException("Content with filename not found: " + filename));
     }
 
     private void writeID3Tags(String title, String description, File mp4File) {

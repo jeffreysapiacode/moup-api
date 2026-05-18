@@ -1,5 +1,7 @@
 package io.moup.api.controller;
 
+import io.moup.api.service.ContentService;
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -15,13 +17,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("download")
 public class DownloadController {
 
-    @GetMapping("/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) throws MalformedURLException {
-        Path path = Paths.get("content/").resolve(fileName);
+    private final ContentService contentService;
+
+    @GetMapping("/{filename}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) throws MalformedURLException {
+        Path path = Paths.get("content/").resolve(filename);
         Resource resource = new UrlResource(path.toUri());
+        contentService.incrementDownloadCount(filename);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
