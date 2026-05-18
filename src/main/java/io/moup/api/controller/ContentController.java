@@ -31,7 +31,7 @@ public class ContentController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("file") MultipartFile file,
-            @RequestParam("thumbnail") MultipartFile thumbnail,
+            @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
             @RequestParam(value = "transcript", required = false) MultipartFile transcript) throws Exception {
         return contentService.uploadAndSave(title, description, file, thumbnail, transcript);
     }
@@ -41,9 +41,15 @@ public class ContentController {
         contentService.saveAlbumArt(file);
     }
 
-    @PostMapping("push")
-    public void push(@RequestParam String uuid) {
-        contentService.push(uuid);
+    @PostMapping("transfer")
+    public void transfer(@RequestParam String uuid) {
+        contentService.transfer(uuid);
+    }
+
+    @PostMapping("reupload")
+    public void reupload(@RequestParam String uuid,
+                         @RequestParam("file") MultipartFile file) throws IOException {
+        contentService.reupload(uuid, file);
     }
 
     @Cacheable("content")

@@ -26,9 +26,9 @@ public class WordController {
     private final WordService wordService;
     private final WordMapper mapper;
 
-    @PostMapping("push")
-    public void push(@RequestBody List<WordView> words, @RequestParam String contentUuid) {
-        wordService.push(words, contentUuid);
+    @PostMapping("receive-transfer")
+    public void importFromTransfer(@RequestBody List<WordView> words, @RequestParam String contentUuid) {
+        wordService.importFromTransfer(words, contentUuid);
     }
 
     @Cacheable("word")

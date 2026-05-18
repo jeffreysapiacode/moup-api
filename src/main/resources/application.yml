@@ -29,7 +29,7 @@ app:
   environment:
     production: false
   http:
-    push-host: https://api.moup.io:8081
+    production-transfer-host: https://api.moup.io:8081
   cors:
     allowed-origins: http://192.168.1.11:4200
 

@@ -46,8 +46,8 @@ public class ContentService {
     @Value("${app.environment.production}")
     private Boolean production;
 
-    @Value("${app.http.push-host}")
-    private String pushHost;
+    @Value("${app.http.production-transfer-host}")
+    private String productionTransferHost;
 
     @Value("${app.allowed-file-types.audio}")
     private String[] allowedFileTypesAudio;
@@ -82,6 +82,8 @@ public class ContentService {
         String fullFileName = baseFilename + "." + ext;
         String filePath = BASE_DIRECTORY + fullFileName;
         File mediaFile = new File(filePath);
+        // Check if the file already exists and throw an error is it does. Tell the user to re-upload instead.
+
         FileUtils.copyInputStreamToFile(file.getInputStream(), mediaFile);
         double durationInSeconds;
         try (IsoFile audioFile = new IsoFile(filePath)) {
@@ -106,7 +108,7 @@ public class ContentService {
                 .description(description)
                 .duration(durationInSeconds)
                 .uploadedOn(uploadedOn)
-                .filename(baseFilename)
+                .filename(fullFileName)
                 .mmx(generateMmx())
                 .type(type)
                 .build());
@@ -114,16 +116,21 @@ public class ContentService {
         return mapper.contentToContentView(content);
     }
 
-    public void saveAlbumArt(MultipartFile file) throws IOException {
-        String filePath = "./content/album-artwork.png";
-        File mp4File = new File(filePath);
-        FileUtils.copyInputStreamToFile(file.getInputStream(), mp4File);
+    @Transactional(readOnly = true)
+    public void reupload(String uuid, MultipartFile file) throws IOException {
+        Content content = get(uuid);
+        String filePath = BASE_DIRECTORY + content.getFilename();
+        File mediaFile = new File(filePath);
+        FileUtils.copyInputStreamToFile(file.getInputStream(), mediaFile);
+        if (content.getType().equals(ContentType.AUDIO)) {
+            writeID3Tags(content.getTitle(), content.getDescription(), mediaFile);
+        }
     }
 
     @Transactional
-    public void push(String uuid) {
+    public void transfer(String uuid) {
         if (production) {
-            throw new RuntimeException("Cannot push in production");
+            throw new RuntimeException("Cannot transfer while in production.");
         }
         Content content = get(uuid);
         HttpHeaders headers = new HttpHeaders();
@@ -133,14 +140,21 @@ public class ContentService {
         body.add("title", content.getTitle());
         body.add("description", content.getDescription());
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        ResponseEntity<Void> response = restTemplate.postForEntity(pushHost + "/content/upload", requestEntity, Void.class);
+        ResponseEntity<ContentView> response = restTemplate.postForEntity(productionTransferHost + "/content/upload", requestEntity, ContentView.class);
         if (response.getStatusCode().is2xxSuccessful()) {
+            // Import words for transcript
             log.info("Content upload service returned 200. Continuing to upload words...");
             List<Word> words = wordService.getAllByContentUuid(uuid);
-            restTemplate.postForObject(pushHost + "/content/push?contentUuid=" + uuid, words, Void.class);
+            restTemplate.postForObject(productionTransferHost + "/auto-dictate/receive-transfer?contentUuid=" + response.getBody().getUuid(), words, Void.class);
         } else {
             throw new RuntimeException("Something went wrong. Received status code: " + response.getStatusCode().value());
         }
+    }
+
+    public void saveAlbumArt(MultipartFile file) throws IOException {
+        String filePath = "./content/album-artwork.png";
+        File mp4File = new File(filePath);
+        FileUtils.copyInputStreamToFile(file.getInputStream(), mp4File);
     }
 
     @Transactional(readOnly = true)
