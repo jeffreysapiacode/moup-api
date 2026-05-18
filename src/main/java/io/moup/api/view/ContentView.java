@@ -22,4 +22,6 @@ public class ContentView {
     private String mmx;
     private ContentType type;
     private Boolean active;
+    private Long downloadCount;
+    private Long playCount;
 }

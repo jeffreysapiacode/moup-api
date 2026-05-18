@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +51,16 @@ public class ContentController {
     public void reupload(@RequestParam String uuid,
                          @RequestParam("file") MultipartFile file) throws IOException {
         contentService.reupload(uuid, file);
+    }
+
+    @PutMapping("play/increment")
+    public void incrementPlayCount(@RequestParam String uuid) {
+        contentService.incrementPlayCount(uuid);
+    }
+
+    @PutMapping("download/increment")
+    public void incrementDownloadCount(@RequestParam String uuid) {
+        contentService.incrementDownloadCount(uuid);
     }
 
     @Cacheable("content")

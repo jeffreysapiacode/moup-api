@@ -112,6 +112,8 @@ public class ContentService {
                 .mmx(generateMmx())
                 .type(type)
                 .active(Boolean.TRUE)
+                .downloadCount(0L)
+                .playCount(0L)
                 .build());
         wordService.importTranscript(content.getUuid(), transcript);
         return mapper.contentToContentView(content);
@@ -156,6 +158,18 @@ public class ContentService {
         String filePath = "./content/album-artwork.png";
         File mp4File = new File(filePath);
         FileUtils.copyInputStreamToFile(file.getInputStream(), mp4File);
+    }
+
+    @Transactional
+    public void incrementPlayCount(String uuid) {
+        Content content = get(uuid);
+        content.setPlayCount(content.getPlayCount() + 1);
+    }
+
+    @Transactional
+    public void incrementDownloadCount(String uuid) {
+        Content content = get(uuid);
+        content.setDownloadCount(content.getDownloadCount() + 1);
     }
 
     @Transactional(readOnly = true)
