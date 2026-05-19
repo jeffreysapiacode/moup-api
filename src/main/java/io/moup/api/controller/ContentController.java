@@ -73,7 +73,7 @@ public class ContentController {
     }
 
     @DeleteMapping("{uuid}")
-    public void delete(@PathVariable String uuid) {
+    public void delete(@PathVariable String uuid) throws IOException {
         contentService.delete(uuid);
     }
 }

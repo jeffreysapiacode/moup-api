@@ -33,11 +33,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.Year;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -91,12 +94,12 @@ public class ContentService {
                     audioFile.getMovieBox().getMovieHeaderBox().getDuration() /
                     audioFile.getMovieBox().getMovieHeaderBox().getTimescale();
         }
-        if (type.equals(ContentType.AUDIO)) {
+        if (ContentType.AUDIO.equals(type)) {
             writeID3Tags(title, description, mediaFile);
         }
         // Save Thumbnail
-        if (type.equals(ContentType.VIDEO)) {
-            if (thumbnail.isEmpty()) {
+        if (ContentType.VIDEO.equals(type)) {
+            if (Objects.isNull(thumbnail) || thumbnail.isEmpty()) {
                 throw new RuntimeException("A thumbnail is required for a video. Recommended size is 1920x1080 in the PNG format.");
             }
             String thumbnailExt = org.apache.commons.io.FilenameUtils.getExtension(thumbnail.getOriginalFilename());
@@ -125,7 +128,7 @@ public class ContentService {
         String filePath = BASE_DIRECTORY + content.getFilename();
         File mediaFile = new File(filePath);
         FileUtils.copyInputStreamToFile(file.getInputStream(), mediaFile);
-        if (content.getType().equals(ContentType.AUDIO)) {
+        if (ContentType.AUDIO.equals(content.getType())) {
             writeID3Tags(content.getTitle(), content.getDescription(), mediaFile);
         }
     }
@@ -184,9 +187,17 @@ public class ContentService {
     }
 
     @Transactional
-    public void delete(String uuid) {
+    public void delete(String uuid) throws IOException {
+        Content content = get(uuid);
         contentRepository.deleteById(uuid);
         wordService.deleteByContentUuid(uuid);
+        // Delete file(s)
+        Files.delete(Paths.get(BASE_DIRECTORY + content.getFilename()));
+        if (ContentType.VIDEO.equals(content.getType())) {
+            // Delete thumbnail
+            String baseFile = org.apache.commons.io.FilenameUtils.getBaseName(content.getFilename());
+            Files.delete(Paths.get(BASE_DIRECTORY + baseFile + ".png"));
+        }
     }
 
     private Content findByFilename(String filename) {
