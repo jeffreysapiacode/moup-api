@@ -1,6 +1,5 @@
 package io.moup.api.view;
 
-import io.moup.api.enums.ContentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +19,6 @@ public class ContentView {
     private Double duration;
     private String filename;
     private String mmx;
-    private ContentType type;
     private Boolean active;
     private Long downloadCount;
     private Long playCount;

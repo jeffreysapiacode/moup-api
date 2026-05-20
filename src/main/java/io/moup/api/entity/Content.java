@@ -1,9 +1,6 @@
 package io.moup.api.entity;
 
-import io.moup.api.enums.ContentType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -32,8 +29,6 @@ public class Content {
     private Double duration;
     private String filename;
     private String mmx;
-    @Enumerated(EnumType.STRING)
-    private ContentType type;
     private Boolean active;
     private Long downloadCount;
     private Long playCount;

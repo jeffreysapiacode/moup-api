@@ -2,14 +2,12 @@ package io.moup.api.service;
 
 import io.moup.api.entity.Content;
 import io.moup.api.entity.Word;
-import io.moup.api.enums.ContentType;
 import io.moup.api.mapper.ContentMapper;
 import io.moup.api.repository.ContentRepository;
 import io.moup.api.util.FilenameUtils;
 import io.moup.api.view.ContentView;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
@@ -40,7 +38,6 @@ import java.time.Instant;
 import java.time.Year;
 import java.util.Base64;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -80,7 +77,6 @@ public class ContentService {
     public ContentView uploadAndSave(String title, String description, MultipartFile file, MultipartFile thumbnail, MultipartFile transcript) throws Exception {
         Instant uploadedOn = Instant.now();
         String ext = org.apache.commons.io.FilenameUtils.getExtension(file.getOriginalFilename());
-        ContentType type = getContentType(ext);
         String baseFilename = FilenameUtils.formatFilename(title);
         String fullFileName = baseFilename + "." + ext;
         String filePath = BASE_DIRECTORY + fullFileName;
@@ -94,18 +90,7 @@ public class ContentService {
                     audioFile.getMovieBox().getMovieHeaderBox().getDuration() /
                     audioFile.getMovieBox().getMovieHeaderBox().getTimescale();
         }
-        if (ContentType.AUDIO.equals(type)) {
-            writeID3Tags(title, description, mediaFile);
-        }
-        // Save Thumbnail
-        if (ContentType.VIDEO.equals(type)) {
-            if (Objects.isNull(thumbnail) || thumbnail.isEmpty()) {
-                throw new RuntimeException("A thumbnail is required for a video. Recommended size is 1920x1080 in the PNG format.");
-            }
-            String thumbnailExt = org.apache.commons.io.FilenameUtils.getExtension(thumbnail.getOriginalFilename());
-            String filename = BASE_DIRECTORY + baseFilename + "." + thumbnailExt;
-            FileUtils.copyInputStreamToFile(thumbnail.getInputStream(), new File(filename));
-        }
+        writeID3Tags(title, description, mediaFile);
         Content content = contentRepository.save(Content.builder()
                 .title(title)
                 .description(description)
@@ -113,7 +98,6 @@ public class ContentService {
                 .uploadedOn(uploadedOn)
                 .filename(fullFileName)
                 .mmx(generateMmx())
-                .type(type)
                 .active(Boolean.TRUE)
                 .downloadCount(0L)
                 .playCount(0L)
@@ -128,9 +112,7 @@ public class ContentService {
         String filePath = BASE_DIRECTORY + content.getFilename();
         File mediaFile = new File(filePath);
         FileUtils.copyInputStreamToFile(file.getInputStream(), mediaFile);
-        if (ContentType.AUDIO.equals(content.getType())) {
-            writeID3Tags(content.getTitle(), content.getDescription(), mediaFile);
-        }
+        writeID3Tags(content.getTitle(), content.getDescription(), mediaFile);
     }
 
     @Transactional
@@ -193,11 +175,6 @@ public class ContentService {
         wordService.deleteByContentUuid(uuid);
         // Delete file(s)
         Files.delete(Paths.get(BASE_DIRECTORY + content.getFilename()));
-        if (ContentType.VIDEO.equals(content.getType())) {
-            // Delete thumbnail
-            String baseFile = org.apache.commons.io.FilenameUtils.getBaseName(content.getFilename());
-            Files.delete(Paths.get(BASE_DIRECTORY + baseFile + ".png"));
-        }
     }
 
     private Content findByFilename(String filename) {
@@ -231,15 +208,5 @@ public class ContentService {
         byte[] bytes = new byte[8];
         random.nextBytes(bytes);
         return encoder.encodeToString(bytes);
-    }
-
-    private ContentType getContentType(String extension) {
-        if (StringUtils.containsAny(extension, allowedFileTypesAudio)) {
-            return ContentType.AUDIO;
-        }
-        if (StringUtils.containsAny(extension, allowedFileTypesVideo)) {
-            return ContentType.VIDEO;
-        }
-        throw new RuntimeException("Cannot import file with extension " + extension);
     }
 }
