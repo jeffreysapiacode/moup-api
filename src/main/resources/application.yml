@@ -23,6 +23,12 @@ spring:
       include-binding-errors: always
 
 app:
+  admin:
+    auth:
+      jwt:
+        secret: I2ACBnq99mzjLE+495bgMEh03kNutr4vmARzF5Xw6bw=
+      login:
+        password: Moup123!
   allowed-file-types:
     audio: m4a
     video: mp4

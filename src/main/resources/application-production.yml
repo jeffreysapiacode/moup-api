@@ -16,6 +16,12 @@ spring:
     password: Moup123!
 
 app:
+  admin:
+    auth:
+      jwt:
+        secret: MrLf61DOaUL3rFB7iPaXci33mXd537uCZzHNfJsBE5k=
+      login:
+        password: Moup123!
   environment:
     production: true
   cors:

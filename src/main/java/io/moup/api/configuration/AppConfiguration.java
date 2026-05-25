@@ -6,7 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import tools.jackson.databind.ObjectMapper;
 
 @Configuration
-public class AppConfig {
+public class AppConfiguration {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
