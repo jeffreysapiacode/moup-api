@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -25,6 +28,21 @@ public class WordController {
     private final WordRepository wordRepository;
     private final WordService wordService;
     private final WordMapper mapper;
+
+    @PostMapping("transcribe")
+    public Long transcribe(@RequestParam String contentUuid) {
+        // It will be a trigger to get the audio file from the server and run the whisper command then import the transcribed audio json file for auto-dictation. Boom.
+        Long start = Instant.now().getEpochSecond();
+        wordService.transcribe(contentUuid);
+        Long end = Instant.now().getEpochSecond();
+        return end - start;
+    }
+
+    @PostMapping("transcript/import")
+    public void importTranscript(@RequestParam String contentUuid,
+                                 @RequestParam(value = "transcript", required = false) MultipartFile transcript) throws IOException {
+        wordService.importTranscript(contentUuid, transcript);
+    }
 
     @PostMapping("receive-transfer")
     public void importFromTransfer(@RequestBody List<WordView> words, @RequestParam String contentUuid) {

@@ -37,6 +37,12 @@ public class WordService {
     }
 
     @Transactional
+    public void transcribe(String contentUuid) {
+        // A promotion should come with a pay raise. Otherwise, it is simply rape.
+
+    }
+
+    @Transactional
     public void importTranscript(String contentUuid, MultipartFile transcript) throws IOException {
         if (Objects.isNull(transcript) || transcript.isEmpty()) {
             log.info("No transcript data found. Skipping import...");
