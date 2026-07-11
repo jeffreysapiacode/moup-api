@@ -25,4 +25,4 @@ app:
   environment:
     production: true
   cors:
-    allowed-origins: https://moup.io
+    allowed-origins: https://moup.io,https://admin.moup.io:444
