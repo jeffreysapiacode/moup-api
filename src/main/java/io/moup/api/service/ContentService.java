@@ -74,7 +74,7 @@ public class ContentService {
 
     @CacheEvict(value = "content", allEntries = true)
     @Transactional
-    public ContentView uploadAndSave(String title, String description, MultipartFile file, MultipartFile thumbnail, MultipartFile transcript) throws Exception {
+    public ContentView uploadAndSave(String title, String description, MultipartFile file, MultipartFile transcript) throws Exception {
         Instant uploadedOn = Instant.now();
         String ext = org.apache.commons.io.FilenameUtils.getExtension(file.getOriginalFilename());
         String baseFilename = FilenameUtils.formatFilename(title);
@@ -98,7 +98,7 @@ public class ContentService {
                 .uploadedOn(uploadedOn)
                 .filename(fullFileName)
                 .mmx(generateMmx())
-                .active(Boolean.TRUE)
+                .transcript(!transcript.isEmpty())
                 .downloadCount(0L)
                 .playCount(0L)
                 .build());

@@ -29,7 +29,7 @@ public class Content {
     private Double duration;
     private String filename;
     private String mmx;
-    private Boolean active;
+    private Boolean transcript;
     private Long downloadCount;
     private Long playCount;
 }
