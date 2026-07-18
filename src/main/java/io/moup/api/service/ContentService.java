@@ -59,22 +59,20 @@ public class ContentService {
 
     private final ContentRepository contentRepository;
     private final WordService wordService;
-    private final ContentMapper mapper;
     private final RestTemplate restTemplate;
 
     private static final SecureRandom random = new SecureRandom();
     private static final Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
 
-    public ContentService(ContentRepository contentRepository, WordService wordService, ContentMapper mapper, RestTemplate restTemplate) {
+    public ContentService(ContentRepository contentRepository, WordService wordService, RestTemplate restTemplate) {
         this.contentRepository = contentRepository;
         this.wordService = wordService;
-        this.mapper = mapper;
         this.restTemplate = restTemplate;
     }
 
     @CacheEvict(value = "content", allEntries = true)
     @Transactional
-    public ContentView uploadAndSave(String title, String description, MultipartFile file, MultipartFile transcript) throws Exception {
+    public Content uploadAndSave(String title, String description, MultipartFile file, MultipartFile transcript) throws Exception {
         Instant uploadedOn = Instant.now();
         String ext = org.apache.commons.io.FilenameUtils.getExtension(file.getOriginalFilename());
         String baseFilename = FilenameUtils.formatFilename(title);
@@ -104,7 +102,7 @@ public class ContentService {
                 .likeCount(0L)
                 .build());
         wordService.importTranscript(content.getUuid(), transcript);
-        return mapper.contentToContentView(content);
+        return content;
     }
 
     @Transactional(readOnly = true)
@@ -121,7 +119,7 @@ public class ContentService {
         Content contentPersistent = get(uuid);
         contentPersistent.setTitle(title);
         contentPersistent.setDescription(description);
-        return contentPersistent;
+        return contentRepository.save(contentPersistent);
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package io.moup.api.controller;
 
+import io.moup.api.entity.Content;
 import io.moup.api.mapper.ContentMapper;
 import io.moup.api.service.ContentService;
 import io.moup.api.view.ContentView;
@@ -21,6 +22,7 @@ public class ContentController {
 
     private final ContentService contentService;
     private final ContentMapper contentMapper;
+    private final ContentMapper mapper;
 
     @PostMapping("upload")
     public ContentView upload(
@@ -28,7 +30,8 @@ public class ContentController {
             @RequestParam("description") String description,
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "transcript", required = false) MultipartFile transcript) throws Exception {
-        return contentService.uploadAndSave(title, description, file, transcript);
+        Content content = contentService.uploadAndSave(title, description, file, transcript);
+        return mapper.contentToContentView(content);
     }
 
     @PostMapping("reupload")
@@ -47,9 +50,11 @@ public class ContentController {
         contentService.transfer(uuid);
     }
 
+    @CacheEvict(value = "content", allEntries = true)
     @PutMapping("{uuid}")
-    public void update(@PathVariable String uuid, @RequestBody ContentView contentView) {
-        contentService.update(uuid, contentView.getTitle(), contentView.getDescription());
+    public ContentView update(@PathVariable String uuid, @RequestBody ContentView contentView) {
+        Content content = contentService.update(uuid, contentView.getTitle(), contentView.getDescription());
+        return mapper.contentToContentView(content);
     }
 
     @PutMapping("play/increment")
