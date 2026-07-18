@@ -22,4 +22,5 @@ public class ContentView {
     private Boolean transcript;
     private Long downloadCount;
     private Long playCount;
+    private Long likeCount;
 }

@@ -4,21 +4,16 @@ import io.moup.api.mapper.ContentMapper;
 import io.moup.api.service.ContentService;
 import io.moup.api.view.ContentView;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("content")
 @AllArgsConstructor
@@ -36,6 +31,12 @@ public class ContentController {
         return contentService.uploadAndSave(title, description, file, transcript);
     }
 
+    @PostMapping("reupload")
+    public void reupload(@RequestParam String uuid,
+                         @RequestParam("file") MultipartFile file) throws IOException {
+        contentService.reupload(uuid, file);
+    }
+
     @PostMapping("upload/album-art")
     public void uploadAlbumArt(@RequestParam("file") MultipartFile file) throws IOException {
         contentService.saveAlbumArt(file);
@@ -46,10 +47,9 @@ public class ContentController {
         contentService.transfer(uuid);
     }
 
-    @PostMapping("reupload")
-    public void reupload(@RequestParam String uuid,
-                         @RequestParam("file") MultipartFile file) throws IOException {
-        contentService.reupload(uuid, file);
+    @PutMapping("{uuid}")
+    public void update(@PathVariable String uuid, @RequestBody ContentView contentView) {
+        contentService.update(uuid, contentView.getTitle(), contentView.getDescription());
     }
 
     @PutMapping("play/increment")

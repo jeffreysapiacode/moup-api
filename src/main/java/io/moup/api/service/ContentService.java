@@ -101,6 +101,7 @@ public class ContentService {
                 .transcript(!transcript.isEmpty())
                 .downloadCount(0L)
                 .playCount(0L)
+                .likeCount(0L)
                 .build());
         wordService.importTranscript(content.getUuid(), transcript);
         return mapper.contentToContentView(content);
@@ -113,6 +114,14 @@ public class ContentService {
         File mediaFile = new File(filePath);
         FileUtils.copyInputStreamToFile(file.getInputStream(), mediaFile);
         writeID3Tags(content.getTitle(), content.getDescription(), mediaFile);
+    }
+
+    @Transactional
+    public Content update(String uuid, String title, String description) {
+        Content contentPersistent = get(uuid);
+        contentPersistent.setTitle(title);
+        contentPersistent.setDescription(description);
+        return contentPersistent;
     }
 
     @Transactional

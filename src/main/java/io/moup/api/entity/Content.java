@@ -32,4 +32,5 @@ public class Content {
     private Boolean transcript;
     private Long downloadCount;
     private Long playCount;
+    private Long likeCount;
 }
