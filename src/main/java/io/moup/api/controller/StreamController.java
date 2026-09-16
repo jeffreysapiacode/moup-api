@@ -19,7 +19,6 @@ public class StreamController {
 
     @GetMapping(value = "{filename}", produces = "audio/mp4")
     public Mono<Resource> stream(@PathVariable String filename) throws InterruptedException {
-//        Thread.sleep(2000);
         return Mono.fromSupplier(()-> resourceLoader.
                 getResource(String.format(FORMAT,filename)))   ;
     }

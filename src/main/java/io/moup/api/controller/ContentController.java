@@ -30,8 +30,7 @@ public class ContentController {
             @RequestParam("description") String description,
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "transcript", required = false) MultipartFile transcript) throws Exception {
-        Content content = contentService.uploadAndSave(title, description, file, transcript);
-        return mapper.contentToContentView(content);
+        return mapper.contentToContentView(contentService.uploadAndSave(title, description, file, transcript));
     }
 
     @PostMapping("reupload")
@@ -62,6 +61,11 @@ public class ContentController {
         contentService.incrementPlayCount(uuid);
     }
 
+    @GetMapping("{uuid}")
+    public ContentView get(@PathVariable String uuid) throws InterruptedException {
+        return contentMapper.contentToContentView(contentService.get(uuid));
+    }
+
     @Cacheable("content")
     @GetMapping
     public List<ContentView> getContentList() {
@@ -76,6 +80,7 @@ public class ContentController {
     public void clearCache() {
     }
 
+    @CacheEvict(value = "content", allEntries = true)
     @DeleteMapping("{uuid}")
     public void delete(@PathVariable String uuid) throws IOException {
         contentService.delete(uuid);

@@ -76,7 +76,8 @@ public class ContentService {
         Instant uploadedOn = Instant.now();
         String ext = org.apache.commons.io.FilenameUtils.getExtension(file.getOriginalFilename());
         String baseFilename = FilenameUtils.formatFilename(title);
-        String fullFileName = baseFilename + "." + ext;
+        String mmx = generateMmx();
+        String fullFileName = baseFilename + "_" + mmx + "." + ext;
         String filePath = BASE_DIRECTORY + fullFileName;
         File mediaFile = new File(filePath);
         // Check if the file already exists and throw an error is it does. Tell the user to re-upload instead.
@@ -95,7 +96,7 @@ public class ContentService {
                 .duration(durationInSeconds)
                 .uploadedOn(uploadedOn)
                 .filename(fullFileName)
-                .mmx(generateMmx())
+                .mmx(mmx)
                 .transcript(!transcript.isEmpty())
                 .downloadCount(0L)
                 .playCount(0L)
